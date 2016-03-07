@@ -33,25 +33,30 @@ void loop()
   if(Serial.available()) //when data is available from serial monitor
   {
     
-   i=0;
+ /*  i=0;
     do{
         command[i]=Serial.read();
         i++;
       }  while(command[i-1]=='\n');
       
       count= i - 1;
-      Serial.print("COMMAND IS:: ");
+     // Serial.print("COMMAND IS:: ");
       for( i=0;i<=count; i++);
       {
         Serial.print(command[i]);
         btSerial.write(command[i]);
       }
-    Serial.println();
+    Serial.println();*/
+
+    char data = Serial.read();
+
+    Serial.print(data);
+    btSerial.write(data);
   }
   
-  for (i=0; i<=count;i++) //reset command
+ /* for (i=0; i<=count;i++) //reset command
   {
     command[i]=0;
-  }
+  }*/
 }
 

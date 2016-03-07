@@ -1,20 +1,38 @@
+#include <SoftwareSerial.h>
+
 #include <Motors.h>
+
+
+ //Creating a structure to allow us to
+ //create objects (USonic sensor, example FWsensor) with all necessary data types
+ //data acessed like FWsensor.distance
+struct Ping 
+{            
+   uint8_t trig;
+   uint8_t echo;
+  
+  long duration;
+  int distance; //distance is in cm
+};
+
+struct Ping pingFW;
 
 int speedd=240; //speed at which motors run
 
 //time since last command has been received, time since begining of code
-long timerNewState=0,timerBegin;  //timer variables
+long timerNewState=0,timerBegin,timeToPrint=0;  //timer variables
 
 char state; //Takes commands
 
 Motors2 motors(5,6,10,11);
-
+//struct Ping pingFW;
 
 void setup()
 
 {
   // put your setup code here, to run once:
   Serial.begin(57600);  //Fast bluetooth baud rate
+  initPing(pingFW,8,9);
 }
 
 void loop()
@@ -74,6 +92,28 @@ void loop()
             stopp();
         }
     }
+    
+    //****************PING**************************
+    
+    getDist(pingFW);
+    
+    
+    
+    if((pingFW.distance!=0) && (timerBegin>timeToPrint) )
+    {
+      timeToPrint=timerBegin+1000; //creating delay using timers
+      Serial.print("\nDistance to nearest obstacle is:: ");
+      Serial.print(pingFW.distance);
+      Serial.println("cm");
+      
+    }
+    
+    else if ( (pingFW.distance==0) && (timerBegin>timeToPrint))
+      {  
+        timeToPrint=timerBegin+1000; //creating delay using timers
+        Serial.println("\nNo obstacle within range of 2m");
+      
+       }
 }
 
 
